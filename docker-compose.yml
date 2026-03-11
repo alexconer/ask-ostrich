@@ -90,8 +90,8 @@ services:
       dockerfile: src/SecurityService/Presentation/SecurityService.Presentation.API/Dockerfile
     container_name: ao_security_service
     depends_on:
-      ao_security_db_migrate:
-        condition: service_completed_successfully
+      #ao_security_db_migrate:
+      #  condition: service_completed_successfully
       ao_message_broker:
         condition: service_healthy
     env_file:
