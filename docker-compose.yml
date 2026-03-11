@@ -9,8 +9,6 @@ services:
       POSTGRES_DB: AuthDb
     ports:
       - "5433:5432"
-    volumes:
-      - ../docker_data/ask-ostrich/ao_security_db_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U user -d AuthDb"]
       interval: 10s
@@ -27,9 +25,6 @@ services:
     restart: always
     ports:
       - "27017:27017"
-    volumes:
-      - ../docker_data/ask-ostrich/ao_manage_db_data:/data/db
-      - ./backend/mongo-init-manage.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
 
   ao_response_db:
     image: mongo:7
@@ -41,9 +36,6 @@ services:
     restart: always
     ports:
       - "27018:27017"
-    volumes:
-      - ../docker_data/ask-ostrich/ao_response_db_data:/data/db
-      - ./backend/mongo-init-response.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
 
   ao_redis_db:
     image: redis:7-alpine
@@ -51,8 +43,6 @@ services:
     restart: always
     ports:
       - "6379:6379"
-    volumes:
-      - ../docker_data/ask-ostrich/ao_redis_db_data:/data
     command: redis-server --appendonly yes
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
@@ -68,8 +58,6 @@ services:
       ao_security_db:
         condition: service_healthy
     working_dir: /src/backend/src/SecurityService/Presentation/SecurityService.Presentation.API
-    volumes:
-      - .:/src
     environment:
       ConnectionStrings__authdbconnection: "Host=ao_security_db;Port=5432;Database=AuthDb;Username=user;Password=password"
     command: >
@@ -89,9 +77,6 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: admin
       RABBITMQ_DEFAULT_PASS: admin
-    volumes:
-      - ../docker_data/ask-ostrich/ao_message_broker/rabbitmq:/var/lib/rabbitmq
-      - ../docker_data/ask-ostrich/ao_message_broker/rabbitmq_log:/var/log/rabbitmq
     healthcheck:
         test: [ "CMD", "rabbitmq-diagnostics", "ping" ]
         interval: 5s
@@ -233,9 +218,6 @@ services:
       - '--config.file=/etc/prometheus/prometheus.yml'
     ports:
       - "9090:9090"
-    volumes:
-      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
-      - ../docker_data/ask-ostrich/prometheus_data:/prometheus
     depends_on:
       - ao_security_service
       - ao_survey_manage_service
@@ -256,7 +238,5 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=admin  
     ports:
       - "3000:3000"
-    volumes:
-      - ../docker_data/ask-ostrich/grafana_data:/var/lib/grafana
     depends_on:
       - prometheus
