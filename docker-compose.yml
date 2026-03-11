@@ -1,4 +1,20 @@
 services:
+    # ========== message broker =========
+  ao_message_broker:
+    image: rabbitmq:3.12-management
+    container_name: ao_message_broker
+    restart: always
+    ports:
+        - 5672:5672
+        - 15672:15672
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+    healthcheck:
+        test: [ "CMD", "rabbitmq-diagnostics", "ping" ]
+        interval: 5s
+        retries: 12
+        timeout: 5s
   # ========== databases ==========
   ao_security_db:
     image: postgres:16
@@ -66,22 +82,7 @@ services:
   #           dotnet restore
   #           dotnet tool run dotnet-ef database update --context AuthDbContext"
       
-  # ========== message broker =========
-  ao_message_broker:
-    image: rabbitmq:3.12-management
-    container_name: ao_message_broker
-    restart: always
-    ports:
-        - 5672:5672
-        - 15672:15672
-    environment:
-      RABBITMQ_DEFAULT_USER: admin
-      RABBITMQ_DEFAULT_PASS: admin
-    healthcheck:
-        test: [ "CMD", "rabbitmq-diagnostics", "ping" ]
-        interval: 5s
-        retries: 12
-        timeout: 5s
+  
 
   # ========== microservices ==========
   ao_security_service:
