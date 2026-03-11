@@ -51,20 +51,20 @@ services:
       timeout: 5s
 
   # ========== migration ==========
-  ao_security_db_migrate:
-    image: mcr.microsoft.com/dotnet/sdk:9.0
-    container_name: ao_security_db_migrate
-    depends_on:
-      ao_security_db:
-        condition: service_healthy
-    working_dir: /src/backend/src/SecurityService/Presentation/SecurityService.Presentation.API
-    environment:
-      ConnectionStrings__authdbconnection: "Host=ao_security_db;Port=5432;Database=AuthDb;Username=user;Password=password"
-    command: >
-      sh -c "dotnet new tool-manifest --force
-             dotnet tool install dotnet-ef --version 9.0.1
-             dotnet restore
-             dotnet tool run dotnet-ef database update --context AuthDbContext"
+  #ao_security_db_migrate:
+  #  image: mcr.microsoft.com/dotnet/sdk:9.0
+  #  container_name: ao_security_db_migrate
+  #  depends_on:
+  #    ao_security_db:
+  #      condition: service_healthy
+  #  working_dir: /src/backend/src/SecurityService/Presentation/SecurityService.Presentation.API
+  #  environment:
+  #    ConnectionStrings__authdbconnection: "Host=ao_security_db;Port=5432;Database=AuthDb;Username=user;Password=password"
+  #  command: >
+  #    sh -c "dotnet new tool-manifest --force
+  #           dotnet tool install dotnet-ef --version 9.0.1
+  #           dotnet restore
+  #           dotnet tool run dotnet-ef database update --context AuthDbContext"
       
   # ========== message broker =========
   ao_message_broker:
